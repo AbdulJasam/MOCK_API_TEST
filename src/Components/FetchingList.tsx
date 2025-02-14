@@ -7,7 +7,7 @@ const FetchingList: React.FC<FetchingListProps> = ({ items, onDelete, onEdit, on
 
   return (
     <ul className="space-y-4 mb-8 ">
-      {items.map((item, key) => (
+      {items && items.map((item, key) => (
         <li key={key} className="p-4 bg-gray-100 shadow-md rounded-md flex flex-col">
           {editingItem?.id === item.id ? (
             <>

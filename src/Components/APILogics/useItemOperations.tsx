@@ -14,10 +14,7 @@ const useItemOperations = () => {
 
   // Fetch data when component loads
   useEffect(() => {
-    
-    return () => {
       fetchItems(1);
-    }
   }, [])
   
 
@@ -50,24 +47,24 @@ const useItemOperations = () => {
 
   // Add New Item
   const handleAddItem = async (title: string, body: string) => {
-  try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-      body: JSON.stringify({ title, body, userId: 1 }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to add item: ${response.status} ${response.statusText}`);
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+        body: JSON.stringify({ title, body, userId: 1 }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to add item: ${response.status} ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      setItems((prevItems) => [data, ...prevItems]);
+    } catch (error) {
+      console.error('Error adding item:', error);
     }
-
-    const data = await response.json();
-    setItems((prevItems) => [data, ...prevItems]);
-  } catch (error) {
-    console.error('Error adding item:', error);
-  }
-};
-
+  };
+  
 
   // Delete an Item
   const handleDelete = async (id: number) => {
