@@ -22,42 +22,69 @@ const useItemOperations = () => {
   
 
   // Fetch Items from API
-  const fetchItems = (pageNum: number) => {
+  const fetchItems = async (pageNum: number) => {
     setLoading(true);
-    fetch(`https://jsonplaceholder.typicode.com/posts?_page=${pageNum}&_limit=10`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.length === 0) {
-          setAllLoaded(true);
-        } else {
-          setItems((prevItems) => [...prevItems, ...data]);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching items:', error);
-        setLoading(false);
-      });
+    try {
+      const response = await fetch(`https://jsonplaceholder.typicode.com/posts?_page=${pageNum}&_limit=10`);
+  
+      if (!response.ok) {
+        throw new Error(`Failed to fetch items: ${response.status} ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+  
+      if (data.length === 0) {
+        setAllLoaded(true);
+        return; // Exit early to prevent unnecessary state updates
+      }
+  
+      setItems((prevItems) => [...prevItems, ...data]);
+  
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   // Add New Item
-  const handleAddItem = (title: string, body: string) => {
-    fetch('https://jsonplaceholder.typicode.com/posts', {
+  const handleAddItem = async (title: string, body: string) => {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=UTF-8' },
       body: JSON.stringify({ title, body, userId: 1 }),
-      headers: { 'Content-type': 'application/json; charset=UTF-8' },
-    })
-      .then((response) => response.json())
-      .then((data) => setItems((prevItems) => [data, ...prevItems]))
-      .catch((error) => console.error('Error adding item:', error));
-  };
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to add item: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    setItems((prevItems) => [data, ...prevItems]);
+  } catch (error) {
+    console.error('Error adding item:', error);
+  }
+};
+
 
   // Delete an Item
-  const handleDelete = (id: number) => {
-    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, { method: 'DELETE' })
-      .then(() => setItems((prevItems) => prevItems.filter((item) => item.id !== id)))
-      .catch((error) => console.error('Error deleting item:', error));
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, { method: 'DELETE' });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to delete item: ${response.status} ${response.statusText}`);
+      }
+  
+      setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
   };
+  
 
   // Edit Item (Show Edit Form)
   const handleEdit = (item: Item) => {
@@ -68,28 +95,38 @@ const useItemOperations = () => {
   const handleUpdateItem = async (id: number, title: string, body: string) => {
     try {
       const existingItem = items.find((item) => item.id === id);
-      if (!existingItem) return;
-
-      const isManualItem = id > 100;
-      const updatedData = { id, title, body, userId: 1 };
-
-      if (!isManualItem) {
-        await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
-          method: 'PATCH',
-          body: JSON.stringify(updatedData),
-          headers: { 'Content-type': 'application/json; charset=UTF-8' },
-        });
+      if (!existingItem) {
+        console.warn(`Item with ID ${id} not found.`);
+        return;
       }
-
+  
+      const isManualItem = id > 100;
+      const updatedData = { ...existingItem, title, body };
+  
+      if (!isManualItem) {
+        const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+          body: JSON.stringify(updatedData),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Failed to update item: ${response.status} ${response.statusText}`);
+        }
+      }
+  
+      // Update local state
       setItems((prevItems) =>
         prevItems.map((item) => (item.id === id ? { ...item, ...updatedData } : item))
       );
-
-      setEditingItem(null);
+  
     } catch (error) {
       console.error('Error updating item:', error);
+    } finally {
+      setEditingItem(null); // Ensures editing mode is exited
     }
   };
+  
 
   // Load More Items
   const handleLoadMore = () => {
