@@ -29,4 +29,7 @@ export interface ListingProps {
     editingItem: any | null;
   }
 
+  export interface AddItemListFormProps {
+    onAdd: (title: string, body: string) => void;
+  }
   
