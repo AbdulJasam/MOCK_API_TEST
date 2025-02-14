@@ -27,6 +27,11 @@ To install and set up the application, follow these steps:
     npm install
 ```
 
+4. Live Link for Mock API test
+
+https://mock-api-test-eta.vercel.app/
+
+
 ## Usage
 To run the application, use the following command:
 ```bash

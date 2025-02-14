@@ -29,7 +29,7 @@ const AddItemListForm: React.FC<AddItemListFormProps> = ({ onAdd }) => {
         className="w-full p-2 border rounded"
         required
       />
-      <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+      <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded">
         Add Item
       </button>
     </form>

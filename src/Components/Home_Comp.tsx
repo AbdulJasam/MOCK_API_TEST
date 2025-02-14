@@ -20,7 +20,7 @@ const Home_Comp: React.FC = () => {
 
     return (
         <div className="container mx-auto p-2 min-h-screen">
-            <h1 className="text-3xl text-center font-bold mb-6 p-8">React Mock API App</h1>
+            <h1 className="text-3xl text-center font-bold mb-6 p-8 bg-gray-200 shadow-md rounded-md">React Mock API App</h1>
 
             {/* Form to Add New Item */}
             <AddItemListForm onAdd={handleAddItem} />
