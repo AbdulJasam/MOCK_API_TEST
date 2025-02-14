@@ -4,11 +4,14 @@ import useItemOperations from './APILogics/useItemOperations';
 
 const Home_Comp: React.FC = () => {
     const {
+        loading,
+        allLoaded,
         editingItem,
         sortOrder,
         handleDelete,
         handleEdit,
         handleUpdateItem,
+        handleLoadMore,
         handleSort,
         sortedItems,
     } = useItemOperations();
@@ -40,6 +43,19 @@ const Home_Comp: React.FC = () => {
                 onUpdate={handleUpdateItem}
                 editingItem={editingItem}
             />
+
+            {/* Load More Button */}
+            <div className="text-center mt-6">
+                {!allLoaded && (
+                    <button
+                        onClick={handleLoadMore}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-semibold shadow-md hover:bg-blue-600 transition-opacity"
+                        disabled={loading}
+                    >
+                        {loading ? 'Loading...' : 'Load More'}
+                    </button>
+                )}
+            </div>
         </div>
     );
 };

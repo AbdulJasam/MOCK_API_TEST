@@ -3,6 +3,9 @@ import {Item} from '../../Types/types'
 
 const useItemOperations = () => {
   const [items, setItems] = useState<Item[]>([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [allLoaded, setAllLoaded] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   
   // Sorting state
@@ -13,22 +16,27 @@ const useItemOperations = () => {
   useEffect(() => {
     
     return () => {
-      fetchItems();
+      fetchItems(1);
     }
   }, [])
   
 
   // Fetch Items from API
-  const fetchItems = () => {
-    
-    fetch(`https://jsonplaceholder.typicode.com/posts?_page=`)
+  const fetchItems = (pageNum: number) => {
+    setLoading(true);
+    fetch(`https://jsonplaceholder.typicode.com/posts?_page=${pageNum}&_limit=10`)
       .then((response) => response.json())
       .then((data) => {
-        setItems((prevItems) => [...prevItems, ...data]);
-        
+        if (data.length === 0) {
+          setAllLoaded(true);
+        } else {
+          setItems((prevItems) => [...prevItems, ...data]);
+        }
+        setLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching items:', error);
+        setLoading(false);
       });
   };
 
@@ -72,6 +80,14 @@ const useItemOperations = () => {
     }
   };
 
+  // Load More Items
+  const handleLoadMore = () => {
+    if (!loading && !allLoaded) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchItems(nextPage);
+    }
+  };
 
   // Sort Items
   const handleSort = (field: 'title' | 'body') => {
@@ -88,11 +104,14 @@ const useItemOperations = () => {
 
   return {
     items,
+    loading,
+    allLoaded,
     editingItem,
     sortOrder,
     handleDelete,
     handleEdit,
     handleUpdateItem,
+    handleLoadMore,
     handleSort,
     sortedItems,
   };
