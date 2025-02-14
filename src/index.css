@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+
+/* Custom Tailwind Theme */
+:root {
+  --bg-dark-gray: #3f3a3a;
+  --text-white: #FFFFFF;
+  --text-light-grey: #c5d43f;
+  --border-soft-gray: #2b1313;
+  --btn-bg-gold: #f3bb04;
+  --btn-text-dark-gray: #1b1919;
+}
+
+.bg-dark-gray {
+  background-color: var(--bg-dark-gray);
+}
+
+.text-light-grey {
+  color: var(--text-light-grey);
+}
+
+.text-white {
+  color: var(--text-white);
+}
+
+.border-soft-gray {
+  border-color: var(--border-soft-gray);
+}
+
+.bg-gold {
+  background-color: var(--btn-bg-gold);
+}
+
+.text-dark-gray {
+  color: var(--btn-text-dark-gray);
+}
