@@ -13,15 +13,15 @@ const useItemOperations = () => {
   useEffect(() => {
     
     return () => {
-      fetchItems(1);
+      fetchItems();
     }
   }, [])
   
 
   // Fetch Items from API
-  const fetchItems = (pageNum: number) => {
+  const fetchItems = () => {
     
-    fetch(`https://jsonplaceholder.typicode.com/posts?_page=${pageNum}&_limit=10`)
+    fetch(`https://jsonplaceholder.typicode.com/posts?_page=`)
       .then((response) => response.json())
       .then((data) => {
         setItems((prevItems) => [...prevItems, ...data]);
